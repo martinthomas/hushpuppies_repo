@@ -2,7 +2,7 @@
 import time
 import board
 import neopixel
-
+from digitalio import Direction, Pull, DigitalInOut
 import adafruit_dotstar as dotstar
 
 RED = (255, 0, 0)
@@ -18,7 +18,10 @@ dot = dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.1)
 dot[0] = (0,0,0)
 dot.show()
 
-
+# magnetic switch on D0(A2)
+switch_d0 = DigitalInOut(board.D0)
+switch_d0.pull = Pull.UP
+ 
 class Paw(object):
     def __init__(self, pixel_pin, num_pixels, bright=0.7):
         
@@ -85,27 +88,24 @@ def rainbow_cycle(wait):
         time.sleep(wait)
 
 while True:
-    color_chase(RED, 0.1)
-    paw(GREEN, 0.1)
-    color_chase(YELLOW, 0.1)
-    paw(PURPLE, 0.1)
-    color_chase(RED, 0.1)
-    pixels.fill(RED)
-    pixels.show()
-    # Increase or decrease to change the speed of the solid color change.
-    time.sleep(1)
-    pixels.fill(GREEN)
-    pixels.show()
-    time.sleep(1)
-    pixels.fill(BLUE)
-    pixels.show()
-    time.sleep(1)
+    while switch_d0.value:
+        color_chase(RED, 0.15)
+        paw(PURPLE, 0.15)
+        color_chase(YELLOW, 0.15)
+        paw(PURPLE, 0.15)
+        color_chase(RED, 0.15)
 
-    color_chase(RED, 0.1)  # Increase the number to slow down the color chase
-    color_chase(YELLOW, 0.1)
-    color_chase(GREEN, 0.1)
-    #color_chase(CYAN, 0.1)
-    color_chase(BLUE, 0.1)
-    color_chase(PURPLE, 0.1)
+        pixels.fill(RED)
+        pixels.show()
+        # Increase or decrease to change the speed of the solid color change.
+        time.sleep(0.5)
 
-    rainbow_cycle(0)  # Increase the number to slow down the rainbow
+        pixels.fill(GREEN)
+        pixels.show()
+        time.sleep(0.5)
+
+        pixels.fill(PURPLE)
+        pixels.show()
+        time.sleep(0.5)
+
+        rainbow_cycle(0)  # Increase the number to slow down the rainbow

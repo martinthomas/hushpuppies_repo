@@ -109,3 +109,7 @@ while True:
         time.sleep(0.5)
 
         rainbow_cycle(0)  # Increase the number to slow down the rainbow
+
+        pixels.fill(BLACK)
+        pixels.show()
+        time.sleep(0.5)
